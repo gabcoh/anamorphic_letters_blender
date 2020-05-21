@@ -8,11 +8,11 @@ import bpy
 OCTREE_DEPTH = 7
 
 # Thanks https://caretdashcaret.com/2015/05/19/how-to-run-blender-headless-from-the-command-line-without-the-gui/
-def get_args():
+def get_args(list=None):
     parser = argparse.ArgumentParser()
  
     # get all script args
-    _, all_arguments = parser.parse_known_args()
+    _, all_arguments = parser.parse_known_args(list)
     double_dash_index = all_arguments.index('--')
     script_args = all_arguments[double_dash_index + 1: ]
  
@@ -23,6 +23,8 @@ def get_args():
     parser.add_argument('--font-path', help="path to fonts", required=True)
     parser.add_argument('--font-name', help="name of font", required=True)
     parser.add_argument('--glyph-width', help="width of glyph at default size in blender", required=True)
+
+
     parsed_script_args, _ = parser.parse_known_args(script_args)
     return parsed_script_args
 
@@ -33,7 +35,10 @@ def import_font(font_path):
     return True
 
 def main():
+    list = "-b -P gen_letter_pairs.py -- --front Y --right E -s AB.gltf --font-path /home/gabe/code/anamorphic/B612_Mono --font-name B612Mono-BoldItalic --glyph-width 0.7 --save AA.glb".split(" ")
+    
     args = get_args()
+    #args = get_args(list)
     
     first_char = args.front
     second_char = args.right
@@ -78,9 +83,13 @@ def main():
     
     print("Adjust positions")
     first_tobj.location[1]  += glyph_width/2
-    second_tobj.location[0] += glyph_width/2
+    second_tobj.location[0] += glyph_width/2 
+    # For some reason for better results might need a slight perterbation
+    second_tobj.location[2] += .000001
+    second_tobj.location[1] += .000001
+    second_tobj.location[0] += .000001
     
-    print("Scaling")
+    print("Scaling Up")
     first_tobj.select_set(True)
     second_tobj.select_set(True)
     
@@ -113,8 +122,9 @@ def main():
     mod.object           = second_tobj
     mod.operation        = 'INTERSECT'
     mod.double_threshold = 0
+       
     bpy.ops.object.modifier_apply(modifier="Boolean")
-    
+
     print("Decimating")
     bpy.ops.object.modifier_add(type='DECIMATE')
     mod = first_tobj.modifiers['Decimate']
@@ -128,6 +138,14 @@ def main():
     bpy.context.view_layer.objects.active = second_tobj
     first_tobj.select_set(False)
     bpy.ops.object.delete(use_global=False)
+     
+    print("Scaling Down")
+    first_tobj.select_set(True)
+    
+    bpy.ops.transform.resize(value=(1/10, 1/10, 1/10))
+    
+    print("Adjust Position")
+    first_tobj.location = Vector([0, 0, 0])
     
     print("Exporting to {}".format(args.save))
     bpy.ops.export_scene.gltf(filepath=args.save)
