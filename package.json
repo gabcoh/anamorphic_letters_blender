@@ -1,0 +1,25 @@
+{
+  "name": "anamorphic",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabcoh/anamorphic_letters_blender.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gabcoh/anamorphic_letters_blender/issues"
+  },
+  "homepage": "https://github.com/gabcoh/anamorphic_letters_blender#readme",
+  "dependencies": {
+    "three": "^0.116.1"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4"
+  }
+}
