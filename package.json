@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/gabcoh/anamorphic_letters_blender#readme",
   "dependencies": {
-    "three": "^0.116.1"
+    "three": "^0.125.0"
   },
   "devDependencies": {
     "parcel": "^1.12.4"
